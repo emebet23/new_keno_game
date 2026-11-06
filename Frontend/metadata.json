@@ -1,0 +1,6 @@
+{
+  "name": "Keno Telegram Mini App",
+  "description": "A premium, provably fair casino-style Keno lottery game built for Telegram Mini Apps with stunning visuals, real-time drawing animations, wallet integration, and historical bet ledgers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,553 @@
+{
+  "info": {
+    "_postman_id": "a45fe94f-4bd2-478d-be8a-52a9245c3fd2",
+    "name": "Keno Game API Engine",
+    "description": "Complete Postman collection for Keno Game Backend APIs including Telegram Authentication, Wallet Management, Instant & Classic Gameplay, Provably Fair Draw Verification, and Admin Dashboard Analytics.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Telegram User Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('authToken', jsonData.data.token);",
+                  "    console.log('Saved authToken:', jsonData.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"telegramId\": 123456789,\n  \"username\": \"player_one\",\n  \"firstName\": \"Player\",\n  \"lastName\": \"One\",\n  \"role\": \"USER\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/telegram",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "telegram"]
+            },
+            "description": "Login or register a player via Telegram authentication."
+          }
+        },
+        {
+          "name": "Telegram Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('adminToken', jsonData.data.token);",
+                  "    console.log('Saved adminToken:', jsonData.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"telegramId\": 999999999,\n  \"username\": \"admin_keno\",\n  \"firstName\": \"Admin\",\n  \"lastName\": \"Manager\",\n  \"role\": \"ADMIN\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/telegram",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "telegram"]
+            },
+            "description": "Login or register an admin user."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Wallet Management",
+      "item": [
+        {
+          "name": "Get Wallet Balance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/wallet",
+              "host": ["{{baseUrl}}"],
+              "path": ["wallet"]
+            },
+            "description": "Fetch user wallet balance (playBalance, mainBalance, totalBalance, currency)."
+          }
+        },
+        {
+          "name": "Deposit Funds",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 500,\n  \"reference\": \"DEP-1001\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/wallet/deposit",
+              "host": ["{{baseUrl}}"],
+              "path": ["wallet", "deposit"]
+            },
+            "description": "Deposit funds into user wallet play balance."
+          }
+        },
+        {
+          "name": "Withdraw Funds",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 50,\n  \"reference\": \"WDR-1001\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/wallet/withdraw",
+              "host": ["{{baseUrl}}"],
+              "path": ["wallet", "withdraw"]
+            },
+            "description": "Withdraw funds from user wallet main balance."
+          }
+        },
+        {
+          "name": "Get Wallet Transactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/wallet/transactions?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["wallet", "transactions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get paginated transaction history for the logged in user."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Keno Gameplay Engine",
+      "item": [
+        {
+          "name": "Play Instant Keno (Single Ticket)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mode\": \"INSTANT\",\n  \"bet\": 10,\n  \"selectedNumbers\": [5, 12, 23, 45, 67]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/games/keno/play",
+              "host": ["{{baseUrl}}"],
+              "path": ["games", "keno", "play"]
+            },
+            "description": "Place an Instant Keno bet. Draws numbers immediately with Provably Fair logic and pays out instantly."
+          }
+        },
+        {
+          "name": "Play Instant Keno (Multi-Ticket)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mode\": \"INSTANT\",\n  \"tickets\": [\n    {\n      \"bet\": 10,\n      \"selectedNumbers\": [1, 2, 3]\n    },\n    {\n      \"bet\": 20,\n      \"selectedNumbers\": [10, 20, 30, 40, 50]\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/games/keno/play",
+              "host": ["{{baseUrl}}"],
+              "path": ["games", "keno", "play"]
+            },
+            "description": "Place multiple Instant Keno tickets simultaneously."
+          }
+        },
+        {
+          "name": "Play Classic Keno (Queue for Draw)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mode\": \"CLASSIC\",\n  \"bet\": 15,\n  \"selectedNumbers\": [7, 14, 21, 28, 35, 42, 49]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/games/keno/play",
+              "host": ["{{baseUrl}}"],
+              "path": ["games", "keno", "play"]
+            },
+            "description": "Queue a ticket for the current active Classic multiplayer round."
+          }
+        },
+        {
+          "name": "Get Current Classic Draw",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/games/keno/current",
+              "host": ["{{baseUrl}}"],
+              "path": ["games", "keno", "current"]
+            },
+            "description": "Get current active Classic round info and pre-published server seed hash."
+          }
+        },
+        {
+          "name": "Get Quick Pick Helper",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/games/keno/quick-pick?count=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["games", "keno", "quick-pick"],
+              "query": [
+                {
+                  "key": "count",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": "Generate random pick of N non-repeating numbers (1-80)."
+          }
+        },
+        {
+          "name": "Get Game or Ticket Result",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/games/keno/result/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["games", "keno", "result", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "REPLACE_WITH_GAME_OR_TICKET_ID"
+                }
+              ]
+            },
+            "description": "Get details of a completed game draw or ticket result."
+          }
+        },
+        {
+          "name": "Get Player Ticket History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/games/keno/history?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["games", "keno", "history"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get player's ticket history and outcomes."
+          }
+        },
+        {
+          "name": "Verify Provably Fair Draw",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/games/keno/provably-fair?serverSeed=SAMPLE_SERVER_SEED&clientSeed=SAMPLE_CLIENT_SEED&nonce=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["games", "keno", "provably-fair"],
+              "query": [
+                {
+                  "key": "serverSeed",
+                  "value": "SAMPLE_SERVER_SEED"
+                },
+                {
+                  "key": "clientSeed",
+                  "value": "SAMPLE_CLIENT_SEED"
+                },
+                {
+                  "key": "nonce",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Verify draw numbers deterministically from serverSeed, clientSeed, and nonce."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Dashboard API",
+      "item": [
+        {
+          "name": "Get System & Payout Settings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "settings"]
+            },
+            "description": "Get current payout multiplier table, RTP, house edge, and bet limits."
+          }
+        },
+        {
+          "name": "Update System & Payout Settings",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"minBet\": 1,\n  \"maxBet\": 5000,\n  \"rtpPercentage\": 95,\n  \"houseEdge\": 5,\n  \"drawIntervalSec\": 30\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "settings"]
+            },
+            "description": "Update bet limits, RTP %, house edge %, or custom payout tables."
+          }
+        },
+        {
+          "name": "Get Financial Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/analytics",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "analytics"]
+            },
+            "description": "Get total bets, payouts, revenue, house profit, actual RTP %, and largest win."
+          }
+        },
+        {
+          "name": "Get User Management List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get list of registered users, status, and wallet statistics."
+          }
+        },
+        {
+          "name": "Update User Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"SUSPENDED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/:id/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", ":id", "status"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "REPLACE_WITH_USER_ID"
+                }
+              ]
+            },
+            "description": "Suspend or activate a user account."
+          }
+        },
+        {
+          "name": "Get Game & Player Reports",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/reports",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "reports"]
+            },
+            "description": "Get reports on daily games, active users count, average bet amount, and top picked numbers statistics."
+          }
+        }
+      ]
+    }
+  ]
+}

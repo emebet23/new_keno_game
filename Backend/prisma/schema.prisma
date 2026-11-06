@@ -1,0 +1,209 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String           @id @default(uuid())
+  telegramId      BigInt           @unique
+  username        String?          @unique
+  firstName       String?
+  lastName        String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  role            Role             @default(USER)
+  status          UserStatus       @default(ACTIVE)
+  isActive        Boolean          @default(true)
+  language        String?          @default("am")
+  phoneNumber     String?
+  referredBy      String?
+  depositRequests DepositRequest[]
+  tickets         Ticket[]
+  transactions    Transaction[]
+  wallet          Wallet?
+
+  @@index([telegramId])
+  @@index([role])
+}
+
+model Wallet {
+  id           String        @id @default(uuid())
+  userId       String        @unique
+  playBalance  Decimal       @default(0) @db.Decimal(18, 2)
+  mainBalance  Decimal       @default(0) @db.Decimal(18, 2)
+  currency     String        @default("ETB")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model KenoGame {
+  id          String          @id @default(uuid())
+  roundNumber Int             @unique
+  drawNumbers Int[]
+  status      GameStatus      @default(WAITING)
+  createdAt   DateTime        @default(now())
+  finishedAt  DateTime?
+  startedAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  mode        GameMode        @default(CLASSIC)
+  fairness    FairnessRecord?
+  tickets     Ticket[]
+
+  @@index([roundNumber])
+  @@index([status])
+  @@index([mode])
+}
+
+model Ticket {
+  id              String       @id @default(uuid())
+  userId          String
+  gameId          String
+  selectedNumbers Int[]
+  betAmount       Decimal      @db.Decimal(18, 2)
+  matches         Int          @default(0)
+  multiplier      Decimal      @default(0) @db.Decimal(18, 2)
+  payout          Decimal      @default(0) @db.Decimal(18, 2)
+  createdAt       DateTime     @default(now())
+  status          TicketStatus @default(PENDING)
+  updatedAt       DateTime     @updatedAt
+  mode            GameMode     @default(CLASSIC)
+  game            KenoGame     @relation(fields: [gameId], references: [id])
+  user            User         @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([gameId])
+  @@index([status])
+}
+
+model Transaction {
+  id            String            @id @default(uuid())
+  userId        String
+  type          TransactionType
+  amount        Decimal           @db.Decimal(18, 2)
+  balanceBefore Decimal           @db.Decimal(18, 2)
+  balanceAfter  Decimal           @db.Decimal(18, 2)
+  status        TransactionStatus @default(SUCCESS)
+  createdAt     DateTime          @default(now())
+  reference     String?
+  description   String?
+  referenceId   String?           @unique
+  walletId      String?
+  walletSource  WalletSource?
+  user          User              @relation(fields: [userId], references: [id])
+  wallet        Wallet?           @relation(fields: [walletId], references: [id])
+
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+  @@index([referenceId])
+}
+
+model DepositRequest {
+  id              String        @id @default(uuid())
+  userId          String
+  amount          Decimal       @db.Decimal(18, 2)
+  referenceId     String        @unique
+  paymentMethod   String?       @default("telebirr")
+  status          DepositStatus @default(PENDING)
+  verifiedData    Json?
+  reviewedBy      String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  user            User          @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+  @@index([referenceId])
+}
+
+model FairnessRecord {
+  id             String   @id @default(uuid())
+  gameId         String   @unique
+  serverSeed     String
+  serverSeedHash String
+  clientSeed     String
+  nonce          Int
+  game           KenoGame @relation(fields: [gameId], references: [id], onDelete: Cascade)
+}
+
+model GameSettings {
+  id              String   @id @default("default")
+  numberPoolSize  Int      @default(80)
+  drawCount       Int      @default(20)
+  minPick         Int      @default(1)
+  maxPick         Int      @default(10)
+  minBet          Decimal  @default(1) @db.Decimal(18, 2)
+  maxBet          Decimal  @default(10000) @db.Decimal(18, 2)
+  payoutTable     Json
+  rtpPercentage   Decimal  @default(95.0) @db.Decimal(5, 2)
+  houseEdge       Decimal  @default(5.0) @db.Decimal(5, 2)
+  drawIntervalSec Int      @default(30)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUPERADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum GameMode {
+  CLASSIC
+  INSTANT
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAW
+  BET
+  WIN
+  REFUND
+  TRANSFER
+  REFERRAL
+}
+
+enum TransactionStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REJECTED
+}
+
+enum WalletSource {
+  PLAY
+  MAIN
+}
+
+enum DepositStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum GameStatus {
+  WAITING
+  DRAWING
+  COMPLETED
+  CANCELLED
+}
+
+enum TicketStatus {
+  PENDING
+  WON
+  LOST
+  CANCELLED
+}
