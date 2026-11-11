@@ -1,14 +1,687 @@
+
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="favicon.ico" type="image/x-icon" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ኬኖ</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title>Keno</title>
+	<script src="https://telegram.org/js/telegram-web-app.js"></script>
+	<link rel="preconnect" href="https://cdn-atlas-v.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.socket.io" crossorigin>
+	<link rel="preload" href="/style.css" as="style">
+	<link rel="preload" href="/jquery-3.1.1.min.js" as="script">
+	<link rel="preload" href="/translations.js" as="script">
+	<link rel="preload" href="/owl.carousel.min.js" as="script">
+	<link rel="preload" href="/moment.min.js" as="script">
+	<link rel="preload" href="/socket.io.min.js" as="script">
+	<link rel="preload" href="/chat-client.js" as="script">
+	<link rel="preload" href="/readable_main.js" as="script">
+	<link href="/style.css" type="text/css" rel="stylesheet">
+	<link href="/chat-ui.css" type="text/css" rel="stylesheet">
+</head>
+<body class="home fairness global_wrapper">
+
+	<div class="loader">
+		<div class="loader_inner">
+			<svg xmlns="http://www.w3.org/2000/svg" class="loader_logo1" version="1.1" viewBox="0 -2 402 103"><path stroke-width="1"  stroke="#0092FF" d="M0.5,70.5L35.4,1.4h18.5l34.7,69.2H67L48.5,34.4c-0.8-1.6-1.5-3-2.1-4.4c-0.6-1.3-1.2-2.7-1.6-3.9c-0.5-1.2-0.9-2.5-1.3-3.6c-0.4-1.2-0.8-2.3-1.1-3.4h4.3c-0.3,1.2-0.7,2.4-1.1,3.6c-0.4,1.2-0.9,2.5-1.4,3.7c-0.5,1.3-1.1,2.5-1.7,3.9c-0.6,1.3-1.3,2.7-2,4.1L21.7,70.5H0.5z"></path><path stroke-width="1"  stroke="#0092FF" d="M87.3,70.5v-51H68.5L58.9,1.4h68.7v18.2h-18.9v51L87.3,70.5L87.3,70.5z"></path><path stroke-width="1"  stroke="#0092FF" d="M166,48.7l24.8-47.3h18.5l34.8,69.2h-21.6l-18.6-36.2c-0.8-1.6-1.5-3-2.1-4.4c-0.6-1.3-1.2-2.7-1.6-3.9c-0.5-1.2-0.9-2.5-1.3-3.6c-0.4-1.2-0.8-2.3-1.1-3.4h4.3c-0.3,1.2-0.7,2.4-1.1,3.6c-0.4,1.2-0.9,2.5-1.4,3.7c-0.5,1.3-1.1,2.5-1.7,3.9c-0.6,1.3-1.3,2.7-2,4.1l-8.4,14.3H166z"></path><path stroke-width="1"  stroke="#0092FF" d="M350,70.5L318,1.4h21.3l13.1,29.4c0.4,0.9,1,2.2,1.7,3.8c0.8,1.6,1.6,3.4,2.5,5.5s1.8,4.3,2.6,6.7c0.9,2.4,1.6,4.8,2.3,7.4h-4c1-3.2,2-6.1,3.1-8.8s2.2-5.3,3.3-7.7c1.1-2.4,2-4.6,2.8-6.6l13-29.7h20.8l-31.2,69.2L350,70.5L350,70.5z"></path><path stroke-width="1"  stroke="#0092FF" d="M306.2,33.2c0.2,0.3,0.4,0.6,0.6,0.8c2.4,3.5,3.7,8,3.7,13.6c0,0.9-0.1,1.9-0.2,2.8h24.2l-8.6-17.2C325.9,33.2,306.2,33.2,306.2,33.2z"></path><path stroke-width="1"  stroke="#0092FF" d="M301.9,36.5c-1.9-2.7-4.5-4.8-7.7-6.2c-3.2-1.4-6.8-2.4-10.7-2.9c-3.9-0.6-7.9-1-11.9-1.3c-1.3-0.1-3-0.2-4.9-0.3c-2-0.1-3.9-0.3-5.8-0.5c-1.9-0.3-3.5-0.7-4.7-1.3c-1.3-0.6-1.9-1.4-1.9-2.5c0-1.2,0.6-2.1,1.7-2.7c1.2-0.6,2.7-1.1,4.7-1.3c2-0.2,4.2-0.3,6.8-0.3c2.6,0,5.5,0.2,8.4,0.6c3,0.4,5.9,1,8.8,1.7s5.4,1.6,7.6,2.7l8.8-14.5c-2.1-1.2-4.7-2.4-7.8-3.7c-3.1-1.3-6.8-2.4-10.9-3.2c-4.1-0.9-8.8-1.3-14-1.3c-5,0-9.8,0.5-14.2,1.5s-8.4,2.5-11.8,4.5s-6.1,4.4-8,7.4c-1.9,2.9-2.9,6.3-2.9,10.1c0,3.2,0.8,6.1,2.3,8.6s3.7,4.7,6.5,6.5s6.1,3.2,10,4.3s8.2,1.8,13,2.1c2.6,0.2,5,0.4,7,0.5c2.1,0.2,3.8,0.4,5.3,0.6c1.5,0.2,2.7,0.5,3.7,0.8s1.7,0.7,2.2,1.2s0.7,1.1,0.7,1.8c0,1.5-0.7,2.6-2,3.2c-1.3,0.6-2.9,1-4.6,1.1c-1.8,0.1-3.3,0.2-4.6,0.2c-4.7,0-10.2-0.8-16.4-2.3c-5.9-1.4-11.8-3.7-17.8-6.9l12.3,24.5c1,0.2,2,0.5,3.1,0.7c5.1,1,10.6,1.5,16.7,1.5c6.7,0,12.7-0.9,18.2-2.8c5.4-1.8,9.7-4.5,12.9-8.1c3.2-3.6,4.8-7.9,4.8-13C304.8,42.9,303.8,39.2,301.9,36.5z"></path><polygon stroke-width="1"  stroke="#0092FF" points="153.6,52.3 153.5,1.4 132.1,1.4 132.1,70.5 175.7,70.5 186,52.3"></polygon></svg>
+			<svg xmlns="http://www.w3.org/2000/svg" class="loader_logo2" version="1.1" viewBox="0 -2 402 103"><path fill="#0092FF" d="M0.5,70.5L35.4,1.4h18.5l34.7,69.2H67L48.5,34.4c-0.8-1.6-1.5-3-2.1-4.4c-0.6-1.3-1.2-2.7-1.6-3.9c-0.5-1.2-0.9-2.5-1.3-3.6c-0.4-1.2-0.8-2.3-1.1-3.4h4.3c-0.3,1.2-0.7,2.4-1.1,3.6c-0.4,1.2-0.9,2.5-1.4,3.7c-0.5,1.3-1.1,2.5-1.7,3.9c-0.6,1.3-1.3,2.7-2,4.1L21.7,70.5H0.5z"></path><path fill="#0092FF" d="M87.3,70.5v-51H68.5L58.9,1.4h68.7v18.2h-18.9v51L87.3,70.5L87.3,70.5z"></path><path fill="#0092FF" d="M166,48.7l24.8-47.3h18.5l34.8,69.2h-21.6l-18.6-36.2c-0.8-1.6-1.5-3-2.1-4.4c-0.6-1.3-1.2-2.7-1.6-3.9c-0.5-1.2-0.9-2.5-1.3-3.6c-0.4-1.2-0.8-2.3-1.1-3.4h4.3c-0.3,1.2-0.7,2.4-1.1,3.6c-0.4,1.2-0.9,2.5-1.4,3.7c-0.5,1.3-1.1,2.5-1.7,3.9c-0.6,1.3-1.3,2.7-2,4.1l-8.4,14.3H166z"></path><path fill="#0092FF" d="M350,70.5L318,1.4h21.3l13.1,29.4c0.4,0.9,1,2.2,1.7,3.8c0.8,1.6,1.6,3.4,2.5,5.5s1.8,4.3,2.6,6.7c0.9,2.4,1.6,4.8,2.3,7.4h-4c1-3.2,2-6.1,3.1-8.8s2.2-5.3,3.3-7.7c1.1-2.4,2-4.6,2.8-6.6l13-29.7h20.8l-31.2,69.2L350,70.5L350,70.5z"></path><path fill="#0092FF" d="M306.2,33.2c0.2,0.3,0.4,0.6,0.6,0.8c2.4,3.5,3.7,8,3.7,13.6c0,0.9-0.1,1.9-0.2,2.8h24.2l-8.6-17.2C325.9,33.2,306.2,33.2,306.2,33.2z"></path><path fill="#0092FF" d="M301.9,36.5c-1.9-2.7-4.5-4.8-7.7-6.2c-3.2-1.4-6.8-2.4-10.7-2.9c-3.9-0.6-7.9-1-11.9-1.3c-1.3-0.1-3-0.2-4.9-0.3c-2-0.1-3.9-0.3-5.8-0.5c-1.9-0.3-3.5-0.7-4.7-1.3c-1.3-0.6-1.9-1.4-1.9-2.5c0-1.2,0.6-2.1,1.7-2.7c1.2-0.6,2.7-1.1,4.7-1.3c2-0.2,4.2-0.3,6.8-0.3c2.6,0,5.5,0.2,8.4,0.6c3,0.4,5.9,1,8.8,1.7s5.4,1.6,7.6,2.7l8.8-14.5c-2.1-1.2-4.7-2.4-7.8-3.7c-3.1-1.3-6.8-2.4-10.9-3.2c-4.1-0.9-8.8-1.3-14-1.3c-5,0-9.8,0.5-14.2,1.5s-8.4,2.5-11.8,4.5s-6.1,4.4-8,7.4c-1.9,2.9-2.9,6.3-2.9,10.1c0,3.2,0.8,6.1,2.3,8.6s3.7,4.7,6.5,6.5s6.1,3.2,10,4.3s8.2,1.8,13,2.1c2.6,0.2,5,0.4,7,0.5c2.1,0.2,3.8,0.4,5.3,0.6c1.5,0.2,2.7,0.5,3.7,0.8s1.7,0.7,2.2,1.2s0.7,1.1,0.7,1.8c0,1.5-0.7,2.6-2,3.2c-1.3,0.6-2.9,1-4.6,1.1c-1.8,0.1-3.3,0.2-4.6,0.2c-4.7,0-10.2-0.8-16.4-2.3c-5.9-1.4-11.8-3.7-17.8-6.9l12.3,24.5c1,0.2,2,0.5,3.1,0.7c5.1,1,10.6,1.5,16.7,1.5c6.7,0,12.7-0.9,18.2-2.8c5.4-1.8,9.7-4.5,12.9-8.1c3.2-3.6,4.8-7.9,4.8-13C304.8,42.9,303.8,39.2,301.9,36.5z"></path><polygon fill="#0092FF" points="153.6,52.3 153.5,1.4 132.1,1.4 132.1,70.5 175.7,70.5 186,52.3"></polygon></svg>
+		</div>
+	</div>
+	
+	<div class="mobile_rotate" id="mobile_rotate">
+		<div class="mobile_rotate_wrap">
+			<svg xmlns="http://www.w3.org/2000/svg" class="mobile_rotate_svg" viewBox="0 0 200 200"><path fill="#FFFFFF" stroke="none" d="M 53.15 184.95Q 61.45 191.6 71.4 191.6L 71.4 199.55 85.55 185.8 71.4 171.9 71.4 180.4Q 64.1 181.15 57.7 174.5 55.35 172 53.95 168.9 52.35 165.3 51.9 160.8L 41.8 160.8Q 41.8 165 42.75 168.9 45.1 177.9 53.15 184.95M 118.6 37.6L 81.8 37.6Q 76 37.6 71.85 41.7 67.75 45.8 67.75 51.65L 67.75 148Q 67.75 153.85 71.85 158 76 162.1 81.8 162.1L 118.6 162.1Q 124.4 162.1 128.5 158 132.6 153.85 132.6 148L 132.6 51.65Q 132.6 45.8 128.5 41.7 124.4 37.6 118.6 37.6M 102.1 47.05Q 102.95 47.9 102.95 49.1 102.95 50.25 102.1 51.1 101.25 51.95 100.05 51.95 98.85 51.95 98 51.1 97.15 50.25 97.15 49.1 97.15 47.9 98 47.05 98.85 46.2 100.05 46.2 101.25 46.2 102.1 47.05M 95.7 145.5L 104.3 145.5Q 105.6 145.5 105.6 146.85L 105.6 155.4Q 105.6 156.75 104.3 156.75L 95.7 156.75Q 94.35 156.75 94.35 155.4L 94.35 146.85Q 94.35 145.5 95.7 145.5M 73.35 58.65L 126.8 58.65 126.8 140.9 73.35 140.9 73.35 58.65M 146.9 15Q 138.55 8.4 128.65 8.4L 128.65 0.4 114.45 14.15 128.65 28.05 128.65 19.55Q 136 18.8 142.35 25.5 147.35 30.8 148.1 39.2L 158.25 39.2Q 158.4 25.05 146.9 15 Z"/></svg>
+		</div>
+	</div>
+	
+	
+	<div class="socket_status" id="socket_status"><div class="socket_status_text" id="socket_status_text"></div></div>
+	<div id="kenoReconnectBanner" class="keno-reconnect-banner" hidden aria-live="polite">Reconnecting...</div>
+	
+	<div class="desktop_background"></div>
+	
+	<div id="global_conteiner">
+		
+		<header class="header">
+			<div class="header_content">
+				<img src="https://cdn-atlas-v.com/games/keno/img/logo_m.png" class="header_logo_mobile"  />
+				<div class="header_center"><div class="header_center_left"></div><div class="header_center_right"></div></div>
+				<div class="header_right">
+					<button type="button" class="keno-chat-toggle" id="kenoChatToggleBtn" aria-label="Open chat">
+						<img src="assets/chat-gifs/keno-chat.svg?v=4" alt="" draggable="false">
+					</button>
+					<span  class="settings_icon"><img src="https://cdn-atlas-v.com/games/keno/img/menu.svg?v=3" class="menu_open" /></span>
+				</div>
+				<div class="clear"></div>
+			</div>	
+		</header>
+		
+		
+		
+		<div class="mobile_menu_cont">		
+			<div class="mobile_menu_top_bar">
+				<div class="mobile_menu_close"><img class="menu_close" src="https://cdn-atlas-v.com/games/keno/img/close_menu.svg" loading="lazy" decoding="async"></div>
+									<div class="mobile_menu_top_bar_lang active" data-lang="en"><img src="https://cdn-atlas-v.com/games/keno/img/en.svg" loading="lazy" decoding="async" /></div>
+						
+			</div>
+			<div class="mobile_menu_tabs">
+				<div class="mobile_menu_tab_itm active" id="mtab1"><img src="https://cdn-atlas-v.com/games/keno/img/help.svg" class="menu_icns" loading="lazy" decoding="async" /><span id="trs_mm1">RULES</span></div>
+				<div class="mobile_menu_tab_itm fairness_tb" id="mtab2"><img src="https://cdn-atlas-v.com/games/keno/img/fairness.svg" class="menu_icns" loading="lazy" decoding="async" /><span id="trs_mm2">FAIRNESS</span></div>
+				<div class="mobile_menu_tab_itm freebet_tb" id="mtab3">
+					<svg class="menu_icns" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+						<path fill="currentColor" d="M20 7h-2.18c.11-.31.18-.65.18-1a3 3 0 0 0-3-3c-.78 0-1.5.3-2.04.78L12 4.67l-.96-.89A2.99 2.99 0 0 0 9 3a3 3 0 0 0-3 3c0 .35.07.69.18 1H4c-1.11 0-2 .89-2 2v2c0 .55.45 1 1 1h1v9c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-9h1c.55 0 1-.45 1-1V9c0-1.11-.89-2-2-2ZM15 5c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1ZM9 5c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1Zm3 3.25L11.25 7h1.5L12 8.25ZM6 19v-8h5v8H6Zm12 0h-5v-8h5v8Z"/>
+					</svg>
+					<span id="trs_mm3">FREE BET</span>
+				</div>
+			</div>	
+			<div class="mobile_menu_contents">
+				<div class="mobile_menu_cont_itm cont_mtab1 active">
+					<p>RTP: 97%</p>
+					<p><span id="rules_r0"><b>Max Win</b></span> - 30000 ETB</p>
+					<p id="rules_r1">"Keno" is a game where the player bets on 1-80 numbered balls by choosing a combination from 1 to 10 numbered balls.</p>
+					<p id="rules_r2">During each round, 20 of the balls numbered from 1 to 80 in sequence are drawn using a random number generator.</p>
+					<h1 id="rules_r3">How to play</h1>
+					<p id="rules_r4">To participate in the game, the player must perform the following actions during the round, which lasts one minute:</p>
+					<ul>
+						<li id="rules_r5">Choose the combination of numbers</li>
+						<li id="rules_r6">Set the amount limit for betting</li>
+						<li id="rules_r7">Click the “Bet” button</li>
+					</ul>
+					<p id="rules_r8">The player can also delete the combination of already selected numbers.</p>
+					<p id="rules_r9">In the field where the numbers from 1 to 80 are present, HOT and COLD numbers are indicated in red and blue colors, with hot numbers being those that are frequently drawn and blue being those that are drawn more infrequently.</p>
+					<h1 id="rules_r10">Payments</h1>
+					<p id="rules_r11">All winning ball combinations have corresponding odds, which is multiplied by the player's bet amount.</p>
+					<p id="rules_r12">The winning combination is calculated as the ratio of the number of balls bet to the number of guessed balls. For example, if you guessed 4 out of 5, the bet would be calculated at 30x.</p>
+					<div class="paytable">
+						<table>
+							<tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th></tr>	
+							<tr><th>0</th><td></td><td></td><td></td><td></td><td></td><td></td><td>1</td><td>1</td><td>2</td><td>2</td></tr>	
+							<tr><th>1</th><td>3.5</td><td>1</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+							<tr><th>2</th><td></td><td>10</td><td>2</td><td>1.5</td><td>1</td><td></td><td></td><td></td><td></td><td></td></tr>
+							<tr><th>3</th><td></td><td></td><td>50</td><td>10</td><td>3</td><td>2</td><td>2</td><td></td><td></td><td></td></tr>
+							<tr><th>4</th><td></td><td></td><td></td><td>80</td><td>30</td><td>15</td><td>4</td><td>5</td><td>2</td><td></td></tr>
+							<tr><th>5</th><td></td><td></td><td></td><td></td><td>150</td><td>60</td><td>20</td><td>15</td><td>10</td><td>5</td></tr>
+							<tr><th>6</th><td></td><td></td><td></td><td></td><td></td><td>500</td><td>80</td><td>50</td><td>25</td><td>30</td></tr>
+							<tr><th>7</th><td></td><td></td><td></td><td></td><td></td><td></td><td>1000</td><td>200</td><td>125</td><td>100</td></tr>
+							<tr><th>8</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>2000</td><td>1000</td><td>300</td></tr>
+							<tr><th>9</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>5000</td><td>2000</td></tr>
+							<tr><th>10</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>10000</td></tr>
+						</table>
+					</div>	
+					<p id="rules_r13">Disconnection policy: If a disconnection accurs after active game round and your bets were accepted by the server, the game will proceed as normal and any winnings will be processed according to the game result regardless of the disconnection.</p>
+				</div>
+				<div class="mobile_menu_cont_itm cont_mtab2">
+					<div class="fairness_top_logo"><img src="https://cdn-atlas-v.com/games/keno/img/icon_fairness.png" loading="lazy" decoding="async" /><p id="feri_r1">ABOUT FAIRNESS</p></div>	
+					<p id="feri_r2">Before the start of a round, the players are provided with a “Hash Code*” - an encrypted text combination “Key*”. Here are the round outcome numbers.</p>
+					<p id="feri_r3">The outcome of the round is determined not at the moment of the game, but in advance for current round, and is given to the players in coded form.</p>
+					<p id="feri_r4" style="word-break: break-all; ">For example, “Hash (Hash) code *” 3586ED7EECC3AEA4A6AC4A359D96E5CF30BBC47E24ED9E030066D7C7DE6C82B1F1376122E35B5165342F27243E1BE5B46B31F2A5D97E6DE26E0E4A6202DF3CDD.</p>
+					<p id="feri_r5">After the end of a round, the players are provided with a “Key*” and an additional input parameter for getting the “Hash Code*” - “Salt*” Using them, every player can copy and encrypt this combination to see that the encrypted “Key * “ corresponds to the “Hash code *” previously determined by the system. This ensures that the outcome of the game is determined not at the moment of the round, but previously, before playing a round.</p>
+					<p id="feri_r6">What is “Salt*” - it is a random sequence of letters and numbers, For instance: e20d4c76c654.</p>
+					<p id="feri_r7" style="word-break: break-all; ">What is “Key*” - a text combination of four parameters<br>1. Round Id<br>2. The outcome numbers<br>3. Wording “Keno”<br>4. A random sequence of letters and numbers<br>After the end of a game, the player will see the Key in his betting history as follows: Round ID (for example, 3013185); the outcome numbers  (for instance: numbers 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20): the name of the game - Keno, and a random sequence of letters and numbers - ca50e5af-9fd6- 46fc-bafa-5cfa21d2602e, followed by the “Key*”, which in this case is - 3013185_numbers_1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20_Keno_ca50e5af-9fd6-46fc-bafa-5cfa21d2602e.</p>
+					<p id="feri_r8" style="word-break: break-all; ">If we encrypt the “Key*” via the “Salt*” (for example, 2b4545ed5a) using the SHA512 generator, we’ll get the defined Hash code. 3586ED7EECC3AEA4A6AC4A359D96E5CF30BBC47E24ED9E030066D7C7DE6C82B1F1376122E35B5165342F27243E1BE5B46B31F2A5D97E6DE26E0E4A6202DF3CDD.</p>
+					<p id="feri_r9">To get a hash code you can click on check icon in Result section and perform the check. You can get the encryption “Key*” and “Hash Code*” below or check on any online server that has a generator SHA512 With Salt.</p>
+				</div>
+				<div class="mobile_menu_cont_itm cont_mtab3">
+					<div class="keno-fb-panel" id="kenoFreeBetMenuPanel"></div>
+				</div>
+			</div>
+		</div>
+		
+		
+
+
+		
+		<div class="content_super_wrapper">
+		
+			<div class="content_left_side for_desktop_only">
+				<div class="side_cont_path">
+					<div class="left_side_top">
+						<div class="header_left">
+							<span class="header_credit" id="my_credit"></span>
+						</div>	
+						<div class="game_id_contener">
+							<div class="game_id" data-id=""  data-hash=""  data-salt="-" data-key="-">ID: <span class="game_id_num"></span></div>
+						</div>
+					</div>	
+					<div class="tab_content_wrapper">
+						<div class="tabs left_side_tabs_top">	
+							<div class="tab_itm active" id="tab1">GAME</div>	
+							<div class="tab_itm" id="tab2">HISTORY</div>
+							<div class="tab_itm" id="tab3">RESULTS</div>
+							<div class="tab_itm" id="tab4">STATISTICS</div>
+							<div class="tab_itm" id="tab5">LEADERS</div>
+						</div>
+						<div class="tab_conts left_side_tabs_cont">
+							<div class="tab_cont cont_tab1 active">
+								<div class="table_header">
+									<div class="table_header_itm"><span id="trs_bets">All</span> <span class="total_tickets_count"></span></div>
+									<div class="table_header_itm"><span id="trs_mytiks">My Tickets</span> <span class="my_tickets_count"></span></div>
+									<div class="table_header_itm"><span id="trs_mybets">My Bets</span> <span class="my_bets_count"></span></div>
+								</div>
+								<div class="table_cont game_table"></div>
+							</div>
+							<div class="tab_cont cont_tab2">
+								<div class="table_cont game_mybet_history_path">
+									<div class="game_mybet_history"></div>
+									<div class="btn_blue btn_load_more btn_load_more_history"><span id="trs_show">SHOW THE RESULTS</span></div>
+								</div>	
+							</div>
+							<div class="tab_cont cont_tab3">
+								<div class="table_header">
+									<div class="table_header_itm" id="trs_drawid">Draw ID</div>
+									<div class="table_header_itm" style="justify-content: end;padding-right: 1em;" id="trs_combin2">Combination</div>
+								</div>
+								<div class="table_cont game_history"></div>
+							</div>
+							<div class="tab_cont cont_tab4">
+								<div class="table_header">
+									<div class="table_header_itm" id="trs_stsh">Last 100 rounds</div>
+									<div class="table_header_itm sorting sort1">
+										<span id="trs_sort">Sort</span>
+										<svg fill="#fff" class="sorting_icn sorting_icn1" viewBox="0 0 24 24"><g><rect x="3" y="11" width="18" height="2" rx="1" fill="#fff"></rect><rect x="3" y="16" width="12" height="2" rx="1" fill="#fff"></rect><rect x="3" y="6" width="6" height="2" rx="1" fill="#fff"></rect></g></svg>
+										<svg fill="#fff" class="sorting_icn sorting_icn2" viewBox="0 0 24 24"><path d="M4 18H8C8.55 18 9 17.55 9 17C9 16.45 8.55 16 8 16H4C3.45 16 3 16.45 3 17C3 17.55 3.45 18 4 18ZM3 7C3 7.55 3.45 8 4 8H20C20.55 8 21 7.55 21 7C21 6.45 20.55 6 20 6H4C3.45 6 3 6.45 3 7ZM4 13H14C14.55 13 15 12.55 15 12C15 11.45 14.55 11 14 11H4C3.45 11 3 11.45 3 12C3 12.55 3.45 13 4 13Z" fill="#fff"></path></svg>
+									</div>
+								</div>
+								<div class="table_cont statistics_table"></div>	
+							</div>
+							<div class="tab_cont cont_tab5 leaders_table">
+								<div class="table_header">
+									<div class="table_header_itm" id="trs_position">Position</div>
+									<div class="table_header_itm" id="trs_user_id">User Id</div>
+									<div class="table_header_itm" id="trs_bet2">Bet</div>
+									<div class="table_header_itm" id="trs_win2">Win</div>
+								</div>
+								<div class="table_cont game_leaders"></div>
+							</div>
+						</div>
+					</div>
+					<!-- Desktop empty-state brand (same as mobile game_footer) -->
+					<div class="keno-sidebar-brand">
+						<img src="https://cdn-atlas-v.com/games/keno/img/icon_fairness.png" class="fairness2_img" alt="" loading="lazy" decoding="async">
+						<div class="fairness2">FAIRNESS</div>
+						<img src="https://cdn-atlas-v.com/games/keno/img/atlas_v_logo.svg" alt="Atlas V" loading="lazy" decoding="async">
+					</div>
+				</div>		
+			</div>
+			
+			
+			
+			<div class="canvas_wrap">
+				<div class="side_cont_path">
+					<img class="header_logo" src="https://cdn-atlas-v.com/games/keno/img/logo.png" />
+					<div class="game_timer">00 : <span class="game_timer_sec">00</span></div>
+					<div class="balls_counter"><span class="balls_counter_num">00</span> / <span>20</span></div>
+					<div class="menu_icon"><img src="https://cdn-atlas-v.com/games/keno/img/menu.svg?v=3" class="menu_open" /></div>
+					<div class="canvas_wrap_inn">
+
+						<div class="game_result_popup">
+							<div class="game_result_popup_win">
+								<div class="game_result_popup_win_ttl" id="trs_you_win">WIN</div>
+								<div class="game_result_popup_win_amount"></div>
+							</div>	
+							<div class="game_result_popup_lost" id="trs_try">TRY AGAIN</div>
+						</div>
+						
+					
+						<div id="game_animation"><div id="waiting_text_cont"><span id="waiting_text">Round in progress.Please wait...</span> <span id="progress_timer"></span></div></div>
+						
+						
+						<div id="tickets_carousel" class="owl-carousel owl-theme">
+							<div class="bet_selections" id="bet_selections">
+								<div class="ticket_help">?</div>
+								<div class="ticket_helptext"><div class="ticket_helptext1" id="trs_tkth1">Choose 10 numbers</div><div class="ticket_helptext2" id="trs_tkth2">From 1 to 80</div></div>
+								<div class="ticket_sel_cont">
+									<div class="ticket_sel_cont_ttl"><span class="ticket_curr_number"></span><span class="ticket_sel_cont_ttl_txt" id="trs_tktttl">Possible win</span><span class="ticket_sel_cont_posible_win"></span></div>
+									<div class="ticket_match_tbl1">
+										<div class="ticket_match_tbl_itm" id="trs_mtch">Match</div>
+										<div class="ticket_match_tbl_itm mtbl mtbl1_itm1"></div>
+										<div class="ticket_match_tbl_itm mtbl mtbl1_itm2"></div>
+										<div class="ticket_match_tbl_itm mtbl mtbl1_itm3"></div>
+										<div class="ticket_match_tbl_itm mtbl mtbl1_itm4"></div>
+										<div class="ticket_match_tbl_itm mtbl mtbl1_itm5"></div>	
+										<div class="ticket_match_tbl_itm mtbl mtbl1_itm6"></div>	
+										<div class="ticket_match_tbl_itm mtbl mtbl1_itm7"></div>									
+									</div>
+									<div class="ticket_match_tbl2">
+										<div class="ticket_match_tbl_itm" id="trs_pays">Pays</div>
+										<div class="ticket_match_tbl_itm mtbl mtbl2_itm1"></div>
+										<div class="ticket_match_tbl_itm mtbl mtbl2_itm2"></div>
+										<div class="ticket_match_tbl_itm mtbl mtbl2_itm3"></div>
+										<div class="ticket_match_tbl_itm mtbl mtbl2_itm4"></div>
+										<div class="ticket_match_tbl_itm mtbl mtbl2_itm5"></div>	
+										<div class="ticket_match_tbl_itm mtbl mtbl2_itm6"></div>	
+										<div class="ticket_match_tbl_itm mtbl mtbl2_itm7"></div>									
+									</div>	
+									<div class="ticket_sel_tbl">
+										<div class="ticket_sel_tbl_itm ticket_sel_tbl_itm1"></div>
+										<div class="ticket_sel_tbl_itm ticket_sel_tbl_itm2"></div>
+										<div class="ticket_sel_tbl_itm ticket_sel_tbl_itm3"></div>
+										<div class="ticket_sel_tbl_itm ticket_sel_tbl_itm4"></div>
+										<div class="ticket_sel_tbl_itm ticket_sel_tbl_itm5"></div>
+										<div class="ticket_sel_tbl_itm ticket_sel_tbl_itm6"></div>
+										<div class="ticket_sel_tbl_itm ticket_sel_tbl_itm7"></div>
+										<div class="ticket_sel_tbl_itm ticket_sel_tbl_itm8"></div>
+										<div class="ticket_sel_tbl_itm ticket_sel_tbl_itm9"></div>
+										<div class="ticket_sel_tbl_itm ticket_sel_tbl_itm10"></div>
+									</div>		
+								</div>
+							</div>
+						</div>
+						<div class="bet_board_cont" id="bet_board_cont">
+							<div class="bet_board_row">
+								<div class="bet_board_itm" id="ka1">1</div>
+								<div class="bet_board_itm" id="ka2">2<div class="bet_board_itm_left"></div></div>
+								<div class="bet_board_itm" id="ka3">3<div class="bet_board_itm_left"></div></div>
+								<div class="bet_board_itm" id="ka4">4<div class="bet_board_itm_left"></div></div>
+								<div class="bet_board_itm" id="ka5">5<div class="bet_board_itm_left"></div></div>
+								<div class="bet_board_itm" id="ka6">6<div class="bet_board_itm_left"></div></div>
+								<div class="bet_board_itm" id="ka7">7<div class="bet_board_itm_left"></div></div>
+								<div class="bet_board_itm" id="ka8">8<div class="bet_board_itm_left"></div></div>
+								<div class="bet_board_itm" id="ka9">9<div class="bet_board_itm_left"></div></div>
+								<div class="bet_board_itm" id="ka10">10<div class="bet_board_itm_left"></div></div>
+							</div>
+							<div class="bet_board_row">	
+								<div class="bet_board_itm" id="ka11">11<div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka12">12<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka13">13<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka14">14<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka15">15<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka16">16<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka17">17<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka18">18<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka19">19<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka20">20<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+							</div>
+							<div class="bet_board_row">	
+								<div class="bet_board_itm" id="ka21">21<div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka22">22<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka23">23<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka24">24<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka25">25<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka26">26<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka27">27<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka28">28<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka29">29<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka30">30<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+							</div>
+							<div class="bet_board_row">		
+								<div class="bet_board_itm" id="ka31">31<div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka32">32<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka33">33<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka34">34<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka35">35<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka36">36<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka37">37<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka38">38<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka39">39<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka40">40<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+							</div>
+							<div class="bet_board_row">	
+							<div class="bet_board_itm" id="ka41">41<div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka42">42<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka43">43<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka44">44<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka45">45<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka46">46<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka47">47<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka48">48<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka49">49<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka50">50<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+							</div>
+							<div class="bet_board_row">	
+								<div class="bet_board_itm" id="ka51">51<div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka52">52<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka53">53<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka54">54<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka55">55<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka56">56<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka57">57<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka58">58<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka59">59<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka60">60<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+							</div>
+							<div class="bet_board_row">		
+								<div class="bet_board_itm" id="ka61">61<div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka62">62<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka63">63<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka64">64<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka65">65<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka66">66<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka67">67<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka68">68<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka69">69<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka70">70<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+							</div>
+							<div class="bet_board_row">		
+								<div class="bet_board_itm" id="ka71">71<div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka72">72<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka73">73<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka74">74<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka75">75<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka76">76<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka77">77<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka78">78<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka79">79<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>
+								<div class="bet_board_itm" id="ka80">80<div class="bet_board_itm_qross"></div><div class="bet_board_itm_left"></div><div class="bet_board_itm_top"></div></div>		
+							</div>		
+						</div>
+					
+					
+					
+						<div class="bet_board">
+							<div class="bet_input">
+								<div class="bet_input_row">
+									<div class="bet_input_top">
+										<div class="bet_input_ui">
+											<span class="bet_input_btn_m" data-val="-1"><img src="https://cdn-atlas-v.com/games/keno/img/mns.svg" /></span>
+											<input type="text"  value="5" class="bet_input_bar" id="bet_input_bar"  autocomplete="new-password">
+											<span class="bet_input_btn_m" data-val="1"><img src="https://cdn-atlas-v.com/games/keno/img/pls.svg" /></span>
+										</div>	
+										<div class="bet_input_btn double_bet" data-val=""><span>X2</span></div>
+										<div class="bet_input_btn bet_input_max" data-action="max" data-val="max"><span>MAX</span></div>
+										<div class="bet_input_btn keno-freebet-gear-btn" id="kenoFreeBetGearBtn" role="button" tabindex="0" aria-label="Free bets" title="Free bets">
+											<span>
+												<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+													<path fill="currentColor" d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54A.5.5 0 0 0 13.9 2h-3.8a.5.5 0 0 0-.49.42l-.36 2.54c-.58.24-1.12.55-1.62.94l-2.39-.96a.5.5 0 0 0-.6.22L2.72 8.48a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.84 14.58a.5.5 0 0 0-.12.64l1.92 3.32c.14.24.43.34.68.22l2.39-.96c.5.39 1.04.7 1.62.94l.36 2.54c.05.24.25.42.49.42h3.8c.24 0 .44-.18.49-.42l.36-2.54c.58-.24 1.12-.55 1.62-.94l2.39.96c.25.12.54.02.68-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58ZM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7Z"/>
+												</svg>
+											</span>
+										</div>
+									</div>
+								</div>
+								<div class="bet_input_row">
+									<div class="bet_set_btn"><div class="bet_set_btn_txt" id="trs_place">BET</div><div class="bet_set_btn_wait"  id="trs_wait">WAIT...</div><div class="bet_set_btn_accept"><img src="https://cdn-atlas-v.com/games/keno/img/check.svg" /> <span id="trs_accepted">BET ACCEPTED<span></div></div>
+								</div>
+							</div>
+						</div>	
+					</div>	
+				</div>
+			</div> 
+			
+			<div class="content_right_side">
+				<div class="side_cont_path">
+					<div class="bet_ui"></div>
+						
+					<div class="statistic_ui">
+						<!-- Empty hosts for mobile remount of GAME/HISTORY/RESULTS/STATISTICS/LEADERS -->
+						<div class="tab_content_wrapper keno-mobile-tabs-host">
+							<div class="tabs right_side_tabs_top"></div>
+							<div class="tab_conts right_side_tabs_cont"></div>
+						</div>
+
+						<div id="kenoChatOverlay" class="keno-chat-overlay">
+							<div class="keno-chat-panel">
+								<div class="chat-wrapper">
+									<div class="chat-header-host">
+										<div class="chat-header">
+											<div class="chat-header-row keno-chat-header-row">
+												<div class="chat-header-online-wrapper">
+													<span class="online-dot" aria-hidden="true"></span>
+													<span class="count" id="chatOnlineCount">0</span>
+													<span class="online-label">Online</span>
+												</div>
+												<button type="button" class="chat-header-button chat-close-x" id="chatCloseBtn" aria-label="Close chat">×</button>
+												<button type="button" class="chat-header-button chat-rules-btn" id="chatRulesBtn" aria-label="Chat rules" title="Chat rules">
+													<img src="assets/chat-icons/rules-icon.svg" alt="" draggable="false">
+												</button>
+											</div>
+										</div>
+									</div>
+									<div class="app-chat-messages-list">
+										<div class="chat-messages-list scroll-hide" id="chatMessagesScroll">
+											<div class="messages-container" id="chatMessagesList"></div>
+										</div>
+									</div>
+									<button type="button" id="chatJumpLatestBtn" class="chat-jump-latest" hidden aria-label="Latest messages">
+										<svg class="chat-jump-latest-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+											<path d="M6.5 9.5L12 15l5.5-5.5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+										</svg>
+										<span id="chatJumpLatestLabel" class="chat-jump-latest-label">Latest messages</span>
+									</button>
+									<div class="chat-input-host app-chat-input">
+										<div class="chat-input keno-chat-composer">
+											<div class="keno-composer-row">
+												<button type="button" class="input-tools-panel-option-btn keno-composer-emoji" id="chatEmojiBtn" aria-label="Emoji">
+													<img src="assets/chat-icons/emoji-icon.svg" alt="" draggable="false">
+												</button>
+												<textarea id="chatInput" class="chat-input-textarea" rows="1" maxlength="160" placeholder="Type a message..."></textarea>
+												<button type="button" class="keno-composer-gif" id="chatGifBtn" aria-label="GIF">GIF</button>
+												<button type="button" class="input-tools-panel-option-btn keno-composer-rain" id="chatRainBtn" aria-label="Rain">
+													<img src="assets/chat-icons/rain-icon.svg" alt="" draggable="false">
+												</button>
+												<button type="button" class="keno-composer-send send-btn" id="chatSendBtn" aria-label="Send message" disabled>
+													<img src="assets/chat-icons/send-icon.svg" alt="" draggable="false">
+												</button>
+											</div>
+											<button type="button" class="input-tools-panel-option-btn keno-tool-back" id="chatToolBackBtn" hidden aria-label="Back">
+												<img src="assets/chat-icons/chevron-left-icon.svg" alt="" draggable="false">
+											</button>
+											<span class="divider" id="chatToolBackDivider" hidden></span>
+											<div class="input-tools-panel-letters-counter" id="chatCharCounter" hidden>
+												<img class="letters-icon" src="assets/chat-icons/letters-icon.svg" alt="" draggable="false">
+												<span id="chatCharCount">160</span>
+											</div>
+											<div class="chat-input-tool-emoji" id="chatEmojiPanel" hidden>
+												<div class="chat-emoji-search">
+													<img class="chat-emoji-search-icon" src="assets/chat-icons/search-icon.svg" alt="" draggable="false" aria-hidden="true">
+													<input type="search" id="chatEmojiSearch" class="chat-emoji-search-input" placeholder="Search emoji.." autocomplete="off">
+												</div>
+												<div class="chat-input-tool-emoji-list scroll-hide" id="chatEmojiList"></div>
+											</div>
+											<div class="chat-input-tool-gif" id="chatGifPanel" hidden>
+												<div class="chat-gif-grid" id="chatGifGrid"></div>
+											</div>
+											<form class="chat-input-tool-rain" id="chatRainPanel" hidden>
+												<div class="chat-input-tool-rain-spinners">
+													<div class="input-spinner">
+														<div class="input-spinner-label">Amount per player <span class="rain-currency" id="chatRainCurrency">ETB</span></div>
+														<div class="chat-spinner">
+															<button type="button" class="chat-spinner-minus" id="chatRainAmountMinus" aria-label="Decrease amount">−</button>
+															<input class="chat-spinner-input" id="chatRainAmount" inputmode="decimal" type="text" value="1.00" aria-label="Amount per player">
+															<button type="button" class="chat-spinner-plus" id="chatRainAmountPlus" aria-label="Increase amount">+</button>
+														</div>
+													</div>
+													<div class="input-spinner">
+														<div class="input-spinner-label">Number of player</div>
+														<div class="chat-spinner">
+															<button type="button" class="chat-spinner-minus" id="chatRainPlayersMinus" aria-label="Decrease players">−</button>
+															<input class="chat-spinner-input" id="chatRainPlayers" inputmode="numeric" type="text" value="1" aria-label="Number of player">
+															<button type="button" class="chat-spinner-plus" id="chatRainPlayersPlus" aria-label="Increase players">+</button>
+														</div>
+													</div>
+												</div>
+												<div class="chat-input-tool-rain-description">First players to tap Claim get this amount. Rain expires in 5 minutes; leftover shares return to you.</div>
+												<button type="button" class="send-rain-btn" id="chatSendRainBtn">Send Rain</button>
+												<span id="chatRainTotal" hidden>0</span>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="game_footer">
+						<img src="https://cdn-atlas-v.com/games/keno/img/icon_fairness.png"   class="fairness2_img" loading="lazy" decoding="async" /><h1 class="fairness2" id="trs_fairness1">FAIRNESS</h1>
+						<img src="https://cdn-atlas-v.com/games/keno/img/atlas_v_logo.svg" loading="lazy" decoding="async" />
+					</div>	
+				</div>	
+			</div>
+		</div>
+		
+
+		
+		
+		<!--<div class="warning_alert_popup">
+			<div class="warning_alert_popup_cont">
+				<div class="close_btn"></div>
+				<h1 class="warning_alert_popup_info" id="trs_connection_lose">You lost your connection.<br>Please reconnect.</h1>
+			</div>
+		</div>-->
+		
+		
+		
+		
+		<div class="fairness_popup">
+			<div class="fairness_popup_content">
+				<div class="fairness_popup_top">
+					<div class="game_round_id"><span id="draw_id3">Draw ID</span>:<span class="game_round_id_num"></span><span class="game_round_date"></span></div>		
+					<div class="fairness_popup_close"></div>
+				</div>
+				<div class="fairness_popup_cont">
+					<div class="fairness_popup_cont_r">
+						<div class="fairness_popup_cont_bttl" id="fairness3">FAIRNESS</div>
+						<div class="fairness_popup_cont_cal">
+							<div class="fairness_popup_cont_ttl" id="trs_key">Key</div>	
+							<div class="fairness_popup_cont_hash">
+								<div class="fairness_popup_hash" id="round_key"></div>
+								<span class="copy_to_clipboard" data-val="">
+									<svg fill="#fff" width="100%" height="100%" viewBox="0 0 14 16" class="copy_to_icon"><path d="M8.94737 0H1.37652C0.619433 0 0 0.641958 0 1.42657V10.6993C0 11.0916 0.309717 11.4126 0.688259 11.4126C1.0668 11.4126 1.37652 11.0916 1.37652 10.6993V2.13986C1.37652 1.74755 1.68623 1.42657 2.06478 1.42657H8.94737C9.32591 1.42657 9.63563 1.10559 9.63563 0.713287C9.63563 0.320979 9.32591 0 8.94737 0ZM11.7004 2.85315H4.12955C3.37247 2.85315 2.75304 3.4951 2.75304 4.27972V14.2657C2.75304 15.0503 3.37247 15.6923 4.12955 15.6923H11.7004C12.4575 15.6923 13.0769 15.0503 13.0769 14.2657V4.27972C13.0769 3.4951 12.4575 2.85315 11.7004 2.85315ZM11.0121 14.2657H4.81781C4.43927 14.2657 4.12955 13.9448 4.12955 13.5524V4.99301C4.12955 4.6007 4.43927 4.27972 4.81781 4.27972H11.0121C11.3907 4.27972 11.7004 4.6007 11.7004 4.99301V13.5524C11.7004 13.9448 11.3907 14.2657 11.0121 14.2657Z"></path></svg>
+									<svg width="100%" height="100%" viewBox="0 0 16 12" class="copy_to_success"><path d="M13.9998 0.700012L5.51984 9.18001L1.97984 5.64001C1.58984 5.25001 0.959844 5.25001 0.569844 5.64001C0.179844 6.03001 0.179844 6.66001 0.569844 7.05001L4.80984 11.29C5.19984 11.68 5.82984 11.68 6.21984 11.29L15.3998 2.11001C15.7898 1.72001 15.7898 1.08001 15.3898 0.690012C15.0198 0.310012 14.3898 0.310012 13.9998 0.700012Z" fill="#37FDAD"></path><defs><linearGradient  x1="0.277343" y1="5.99438" x2="15.6911" y2="5.99438" gradientUnits="userSpaceOnUse"><stop stop-color="#8CC318"></stop><stop offset="1" stop-color="#159138"></stop></linearGradient></defs></svg>
+								</span>
+							</div>
+						</div>
+						<div class="fairness_popup_cont_car">
+							<div class="fairness_popup_cont_ttl" id="trs_salt">Salt</div>
+							<div class="fairness_popup_cont_hash">
+								<div class="fairness_popup_hash" id="round_salt"></div>
+								<span class="copy_to_clipboard" data-val="">
+									<svg fill="#fff" width="100%" height="100%" viewBox="0 0 14 16" class="copy_to_icon"><path d="M8.94737 0H1.37652C0.619433 0 0 0.641958 0 1.42657V10.6993C0 11.0916 0.309717 11.4126 0.688259 11.4126C1.0668 11.4126 1.37652 11.0916 1.37652 10.6993V2.13986C1.37652 1.74755 1.68623 1.42657 2.06478 1.42657H8.94737C9.32591 1.42657 9.63563 1.10559 9.63563 0.713287C9.63563 0.320979 9.32591 0 8.94737 0ZM11.7004 2.85315H4.12955C3.37247 2.85315 2.75304 3.4951 2.75304 4.27972V14.2657C2.75304 15.0503 3.37247 15.6923 4.12955 15.6923H11.7004C12.4575 15.6923 13.0769 15.0503 13.0769 14.2657V4.27972C13.0769 3.4951 12.4575 2.85315 11.7004 2.85315ZM11.0121 14.2657H4.81781C4.43927 14.2657 4.12955 13.9448 4.12955 13.5524V4.99301C4.12955 4.6007 4.43927 4.27972 4.81781 4.27972H11.0121C11.3907 4.27972 11.7004 4.6007 11.7004 4.99301V13.5524C11.7004 13.9448 11.3907 14.2657 11.0121 14.2657Z"></path></svg>
+									<svg width="100%" height="100%" viewBox="0 0 16 12" class="copy_to_success"><path d="M13.9998 0.700012L5.51984 9.18001L1.97984 5.64001C1.58984 5.25001 0.959844 5.25001 0.569844 5.64001C0.179844 6.03001 0.179844 6.66001 0.569844 7.05001L4.80984 11.29C5.19984 11.68 5.82984 11.68 6.21984 11.29L15.3998 2.11001C15.7898 1.72001 15.7898 1.08001 15.3898 0.690012C15.0198 0.310012 14.3898 0.310012 13.9998 0.700012Z" fill="#37FDAD"></path><defs><linearGradient  x1="0.277343" y1="5.99438" x2="15.6911" y2="5.99438" gradientUnits="userSpaceOnUse"><stop stop-color="#8CC318"></stop><stop offset="1" stop-color="#159138"></stop></linearGradient></defs></svg>
+								</span>
+							</div>
+						</div>
+						<div class="fairness_popup_cont_ttl" id="trs_hash">Hash</div>
+						<div class="fairness_popup_cont_hash">
+							<div class="fairness_popup_hash" id="round_hash"></div>
+							<span class="copy_to_clipboard" data-val="">
+								<svg fill="#fff" width="100%" height="100%" viewBox="0 0 14 16" class="copy_to_icon"><path d="M8.94737 0H1.37652C0.619433 0 0 0.641958 0 1.42657V10.6993C0 11.0916 0.309717 11.4126 0.688259 11.4126C1.0668 11.4126 1.37652 11.0916 1.37652 10.6993V2.13986C1.37652 1.74755 1.68623 1.42657 2.06478 1.42657H8.94737C9.32591 1.42657 9.63563 1.10559 9.63563 0.713287C9.63563 0.320979 9.32591 0 8.94737 0ZM11.7004 2.85315H4.12955C3.37247 2.85315 2.75304 3.4951 2.75304 4.27972V14.2657C2.75304 15.0503 3.37247 15.6923 4.12955 15.6923H11.7004C12.4575 15.6923 13.0769 15.0503 13.0769 14.2657V4.27972C13.0769 3.4951 12.4575 2.85315 11.7004 2.85315ZM11.0121 14.2657H4.81781C4.43927 14.2657 4.12955 13.9448 4.12955 13.5524V4.99301C4.12955 4.6007 4.43927 4.27972 4.81781 4.27972H11.0121C11.3907 4.27972 11.7004 4.6007 11.7004 4.99301V13.5524C11.7004 13.9448 11.3907 14.2657 11.0121 14.2657Z"></path></svg>
+								<svg width="100%" height="100%" viewBox="0 0 16 12" class="copy_to_success"><path d="M13.9998 0.700012L5.51984 9.18001L1.97984 5.64001C1.58984 5.25001 0.959844 5.25001 0.569844 5.64001C0.179844 6.03001 0.179844 6.66001 0.569844 7.05001L4.80984 11.29C5.19984 11.68 5.82984 11.68 6.21984 11.29L15.3998 2.11001C15.7898 1.72001 15.7898 1.08001 15.3898 0.690012C15.0198 0.310012 14.3898 0.310012 13.9998 0.700012Z" fill="#37FDAD"></path><defs><linearGradient  x1="0.277343" y1="5.99438" x2="15.6911" y2="5.99438" gradientUnits="userSpaceOnUse"><stop stop-color="#8CC318"></stop><stop offset="1" stop-color="#159138"></stop></linearGradient></defs></svg>
+							</span>
+						</div>
+					</div>
+
+					<div class="fairness_popup_cont_bttl" id="trs_check_hash">CHECK HASH CODE</div>
+					<div class="fairness_popup_cont_cal">
+						<div class="fairness_popup_cont_ttl" id="trs_keyp">Past Key</div>
+						<div class="fairness_popup_cont_hash"><div class="fairness_popup_hash key_container"></div><span class="past_to_value"><svg fill="#fff" width="100%" height="100%" viewBox="0 0 14.7 18"><path d="M13.1,16.4H1.6V3.3h1.6v2.5h8.2V3.3h1.6 M7.4,1.6c0.5,0,0.8,0.4,0.8,0.8S7.8,3.3,7.4,3.3S6.5,2.9,6.5,2.5l0,0 C6.5,2,6.9,1.6,7.4,1.6 M13.1,1.6H9.7C9.2,0.4,7.8-0.3,6.6,0.1C5.9,0.4,5.3,0.9,5.1,1.6H1.6C0.7,1.6,0,2.4,0,3.3c0,0,0,0,0,0v13.1 C0,17.3,0.7,18,1.6,18h11.5c0.9,0,1.6-0.7,1.6-1.6V3.3C14.7,2.4,14,1.6,13.1,1.6C13.1,1.6,13.1,1.6,13.1,1.6z"></path></svg></span></div>
+					</div>
+					<div class="fairness_popup_cont_car">
+						<div class="fairness_popup_cont_ttl" id="trs_saltp">Past Salt</div>
+						<div class="fairness_popup_cont_hash"><div class="fairness_popup_hash salt_container"></div><span class="past_to_value"><svg fill="#fff" width="100%" height="100%" viewBox="0 0 14.7 18"><path d="M13.1,16.4H1.6V3.3h1.6v2.5h8.2V3.3h1.6 M7.4,1.6c0.5,0,0.8,0.4,0.8,0.8S7.8,3.3,7.4,3.3S6.5,2.9,6.5,2.5l0,0 C6.5,2,6.9,1.6,7.4,1.6 M13.1,1.6H9.7C9.2,0.4,7.8-0.3,6.6,0.1C5.9,0.4,5.3,0.9,5.1,1.6H1.6C0.7,1.6,0,2.4,0,3.3c0,0,0,0,0,0v13.1 C0,17.3,0.7,18,1.6,18h11.5c0.9,0,1.6-0.7,1.6-1.6V3.3C14.7,2.4,14,1.6,13.1,1.6C13.1,1.6,13.1,1.6,13.1,1.6z"></path></svg></span></div>
+					</div>
+					<div class="fairness_popup_cont_ttl" id="trs_hash2">Hash</div>
+					<div class="fairness_popup_cont_hash"><div class="fairness_popup_hash hash_container"></div></div>
+					<div class="btn_blue btn_load_more btn_check_hash"><span id="trs_check">CHECK</span></div>	
+					<div class="about_hash_code about_fairness_info" id="trs_about_hash">About Hash Code</div>		
+				</div>
+			</div>	
+		</div>
+	</div>		
+	
+	
+	
+	
+
+	
+	<div class="keno-freebet-modal" id="kenoFreeBetModal" hidden>
+		<div class="keno-freebet-modal-dialog" role="dialog" aria-labelledby="kenoFreeBetModalTitle">
+			<div class="keno-freebet-modal-header">
+				<span class="keno-freebet-modal-title" id="kenoFreeBetModalTitle">
+					<svg class="menu_icns" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+						<path fill="currentColor" d="M20 7h-2.18c.11-.31.18-.65.18-1a3 3 0 0 0-3-3c-.78 0-1.5.3-2.04.78L12 4.67l-.96-.89A2.99 2.99 0 0 0 9 3a3 3 0 0 0-3 3c0 .35.07.69.18 1H4c-1.11 0-2 .89-2 2v2c0 .55.45 1 1 1h1v9c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-9h1c.55 0 1-.45 1-1V9c0-1.11-.89-2-2-2ZM15 5c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1ZM9 5c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1Zm3 3.25L11.25 7h1.5L12 8.25ZM6 19v-8h5v8H6Zm12 0h-5v-8h5v8Z"/>
+					</svg>
+					FREE BET
+				</span>
+				<button type="button" class="keno-freebet-modal-close" id="kenoFreeBetModalClose" aria-label="Close">×</button>
+			</div>
+			<div class="keno-freebet-modal-body">
+				<div class="keno-fb-panel" id="kenoFreeBetModalPanel"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="chat-rules-overlay" id="chatRulesModal" hidden>
+		<div class="chat-rules-dialog" role="dialog" aria-labelledby="chatRulesTitle">
+			<div class="chat-rules-header">
+				<span id="chatRulesTitle">CHAT RULES</span>
+				<button type="button" class="chat-rules-header-close" id="chatRulesHeaderCloseBtn" aria-label="Close">×</button>
+			</div>
+			<div class="chat-rules-body">
+				<p class="chat-rules-topic">Please follow these rules when chatting:</p>
+				<ul class="chat-rules-list">
+					<li>Do not spam or use excessive capital letters when chatting.</li>
+					<li>Be respectful; do not harass or be offensive to other players.</li>
+					<li>Do not share personal information of yourself or other players.</li>
+					<li>Do not beg or ask for loans, rains, or tips.</li>
+					<li>Avoid behavior that may be seen as potential scams.</li>
+					<li>Do not engage in any form of advertising, trading, selling, buying, or offering services.</li>
+				</ul>
+			</div>
+			<button type="button" class="chat-rules-close-btn" id="chatRulesCloseBtn">Acknowledge</button>
+		</div>
+	</div>
+
+	<script>
+		var _is_mobile=false;
+		// Same host as the page (or Backend on 5000 if frontend is served on 3000)
+		var _server_url = window._server_url || (window.location.port === "3000" ? (window.location.protocol + "//" + window.location.hostname + ":5000") : window.location.origin);
+		(function bootLaunchParams() {
+			var params = new URLSearchParams(window.location.search);
+			var token = params.get("token");
+			var user = params.get("user");
+			var currency = params.get("currency");
+			var lang = params.get("lang");
+
+			// If inside Telegram WebApp, extract Telegram user credentials if available
+			if (window.Telegram && window.Telegram.WebApp) {
+				try {
+					window.Telegram.WebApp.ready();
+					window.Telegram.WebApp.expand();
+					var tgUser = window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user;
+					if (tgUser && !user) {
+						user = String(tgUser.id);
+					}
+					if (!token && window.Telegram.WebApp.initData) {
+						token = window.Telegram.WebApp.initData;
+					}
+				} catch (e) {
+					console.warn("Telegram WebApp init warning:", e);
+				}
+			}
+
+			var hasRealToken = Boolean(token && token !== "demo" && token !== "local-demo");
+			window._user_id = user || (hasRealToken ? "player" : "demo_player");
+			window._user_token = hasRealToken ? token : (token || "demo");
+			window._demo_game = !hasRealToken;
+			window._launch_operator = params.get("operator") || null;
+			if (currency) {
+				window._currency = "<span>" + String(currency).toUpperCase().slice(0, 3) + "</span>";
+			} else {
+				window._currency = "<span>ETB</span>";
+			}
+			if (lang) {
+				window._language = lang;
+			}
+		})();
+		var _user_id = window._user_id;
+		var _user_token = window._user_token;
+		var _demo_game = window._demo_game;
+		var _currency = window._currency;
+		var _min_bet=1;
+		var _max_bet=1000;
+		var _max_win=30000;
+	</script>
+	
+	<script defer src="/translations.js"></script>
+	<script defer src="/jquery-3.1.1.min.js"></script>
+	<script defer src="/owl.carousel.min.js"></script>
+	<script defer src="/moment.min.js"></script>
+	<script defer src="/socket.io.min.js"></script>
+	<script defer src="/chat-client.js"></script>
+	<script defer src="/readable_main.js"></script>
+
+</body>
 </html>

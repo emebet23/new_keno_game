@@ -7,15 +7,15 @@ export class SchedulerService {
   private gameService = new GameService();
 
   async run() {
-    const current = await prisma.$transaction(async (tx) => {
-      return this.gameService.getOrCreateCurrentGame(tx);
-    });
-
-    if (!current) {
-      return;
-    }
-
     try {
+      const current = await prisma.$transaction(async (tx) => {
+        return this.gameService.getOrCreateCurrentGame(tx);
+      });
+
+      if (!current) {
+        return;
+      }
+
       console.log(`[Scheduler] Drawing numbers for Classic Game Round #${current.roundNumber}...`);
       const result = await this.engine.settle(current.id);
       console.log(
@@ -26,8 +26,8 @@ export class SchedulerService {
       await prisma.$transaction(async (tx) => {
         await this.gameService.getOrCreateCurrentGame(tx);
       });
-    } catch (err) {
-      console.error(`[Scheduler] Failed to settle round #${current.roundNumber}:`, err);
+    } catch (err: any) {
+      console.warn(`[Scheduler] Notice:`, err?.message || err);
     }
   }
 }

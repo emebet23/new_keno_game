@@ -62,11 +62,14 @@ async function getLang(telegramId: string): Promise<Lang> {
 
 // ─── Keyboards ────────────────────────────────────────────────────────
 
-function mainMenuKeyboard(lang: Lang): TelegramBot.InlineKeyboardMarkup {
+function mainMenuKeyboard(lang: Lang, telegramId?: string | number): TelegramBot.InlineKeyboardMarkup {
   const T = t(lang);
+  const playUrl = telegramId
+    ? `${WEBAPP_URL}?user=${telegramId}&operator=gift_bingo&currency=ETB&lang=${lang}`
+    : WEBAPP_URL;
   return {
     inline_keyboard: [
-      [{ text: T.btnPlay, web_app: { url: WEBAPP_URL } }],
+      [{ text: T.btnPlay, web_app: { url: playUrl } }],
       [
         { text: T.btnBalance, callback_data: "balance" },
         { text: T.btnHistory, callback_data: "history" },
