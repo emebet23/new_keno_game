@@ -121,11 +121,13 @@ export function initSocket(httpServer: HttpServer): Server {
                 status: "roomevent",
                 data: {
                   status: "chat",
-                  id: msg.id,
-                  user: msg.user,
-                  text: msg.text,
-                  timestamp: msg.timestamp,
-                  likes: msg.likes,
+                  message: {
+                    id: msg.id,
+                    username: msg.user,
+                    text: msg.text,
+                    createdAt: msg.timestamp,
+                    likes: msg.likes,
+                  },
                 },
               });
             }
@@ -134,11 +136,27 @@ export function initSocket(httpServer: HttpServer): Server {
             const players = Number(eventData.players);
             const rainRes = await engine.createRain(currentUserId, amount, players);
             if (rainRes.success && rainRes.message) {
+              const rm = rainRes.message;
               gameSocket.emit("message", {
                 status: "roomevent",
                 data: {
                   status: "chat",
-                  ...rainRes.message,
+                  message: {
+                    id: rm.id,
+                    username: rm.user,
+                    createdAt: rm.timestamp,
+                    likes: rm.likes,
+                    kind: "rain",
+                    meta: rm.rain
+                      ? {
+                          amount: rm.rain.amount,
+                          playerCount: rm.rain.players,
+                          claimedCount: rm.rain.claimedBy.length,
+                          expiresAt: rm.rain.expiresAt,
+                          status: "open",
+                        }
+                      : undefined,
+                  },
                 },
               });
               const newBal = await engine.getUserBalance(currentUserId);

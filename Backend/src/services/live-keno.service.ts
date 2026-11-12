@@ -522,7 +522,27 @@ export class LiveKenoEngine {
       statistics: this.statistics,
       game_status: this.currentRound.status === "WAITING" ? 1 : 0,
       time: this.currentRound.status === "WAITING" ? this.currentRound.time : 0,
-      chat: this.chatMessages.slice(-50),
+      chat: this.chatMessages.slice(-50).map((m) => ({
+        id: m.id,
+        username: m.user,
+        text: m.text,
+        gif: m.gif,
+        createdAt: m.timestamp,
+        likes: m.likes,
+        ...(m.rain
+          ? {
+              kind: "rain",
+              meta: {
+                amount: m.rain.amount,
+                playerCount: m.rain.players,
+                claimedCount: m.rain.claimedBy.length,
+                expiresAt: m.rain.expiresAt,
+                status: Date.now() > m.rain.expiresAt ? "expired" : "open",
+              },
+            }
+          : {}),
+        ...(m.gif ? { kind: "gif", meta: { url: m.gif } } : {}),
+      })),
       online,
     };
   }
